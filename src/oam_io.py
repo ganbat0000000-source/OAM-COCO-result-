@@ -238,11 +238,13 @@ def read_oam_csv(file_bytes: bytes) -> OAM:
     y = obj_df.iloc[:, y_col].apply(_parse_numeric)
     y.name = "Y"
 
-    x_raw, harmonized_attr_ids = _harmonize_mixed_scales(x_raw, attr_ids, attr_units)
-
+    # Keep numeric values exactly as parsed; do not auto-convert decimal/percent scales.
+    harmonized_attr_ids: List[str] = []
+    
     # Basic sanity checks
     if x_raw.shape[1] != len(directions):
         raise ValueError("Attribute column count mismatch while parsing.")
+
 
     return OAM(
         directions=directions,
